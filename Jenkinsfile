@@ -37,9 +37,10 @@ pipeline {
                 expression { return !params.SKIP_TESTS }  
             }
             steps {
-                dir('api') {
+                dir('web') {
                     sh """
-                    python3 test.py
+                    echo unit test
+                    npm run test:unit
                     """
                 }
             }

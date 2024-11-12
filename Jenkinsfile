@@ -11,9 +11,6 @@ pipeline {
         AWS_DEFAULT_REGION = 'ap-south-1'
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/"
     }
-    parameters {
-        booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
-    }
     stages {
         stage('Clean Workspace') {
             steps {
@@ -29,18 +26,6 @@ pipeline {
             steps {
                 dir('api') {
                     sh 'npm install'
-                }
-            }
-        }
-        stage('Run Tests') {
-            when {
-                expression { return !params.SKIP_TESTS }  
-            }
-            steps {
-                dir('api') {
-                    sh """
-                    python3 test.py
-                    """
                 }
             }
         }

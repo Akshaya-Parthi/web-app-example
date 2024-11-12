@@ -49,8 +49,8 @@ pipeline {
                 dir('api') {
                     withSonarQubeEnv('sonar-server') {
                         sh '''${SCANNER_HOME}/bin/sonar-scanner \
-                        -Dsonar.projectName=web-app \
-                        -Dsonar.projectKey=web-app'''
+                        -Dsonar.projectName=api \
+                        -Dsonar.projectKey=api'''
                     }
                 }
             }
@@ -65,7 +65,7 @@ pipeline {
         stage("OWASP Dependency Check"){
             steps{
                 dependencyCheck additionalArguments: '--scan ./ --format XML ', odcInstallation: 'DP'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                dependencyCheckPublisher pattern: '**/api-dependency-check-report.xml'
             }
         }
         stage("Docker Image Build") {
@@ -89,8 +89,8 @@ pipeline {
         stage('Anchore Grype Vulnerability Scan') {
             steps {
                 script {
-                    sh 'docker run --rm anchore/grype:latest ${REPOSITORY_URI}${AWS_ECR_REPO_NAME}:${BUILD_NUMBER} -o json > scan.json'
-                    sh 'cat scan.json'
+                    sh 'docker run --rm anchore/grype:latest ${REPOSITORY_URI}${AWS_ECR_REPO_NAME}:${BUILD_NUMBER} -o json > api-scan.json'
+                    sh 'cat api-scan.json'
                 }
             }
         }
